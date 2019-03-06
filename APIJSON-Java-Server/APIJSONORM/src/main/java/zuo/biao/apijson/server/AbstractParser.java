@@ -17,6 +17,7 @@ package zuo.biao.apijson.server;
 import static zuo.biao.apijson.RequestMethod.GET;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -136,6 +137,11 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 	protected String globleDatabase;
 	public AbstractParser<T> setGlobleDatabase(String globleDatabase) {
 		this.globleDatabase = globleDatabase;
+		return this;
+	}
+	protected String globleSchema;
+	public AbstractParser<T> setGlobleSchema(String globleSchema) {
+		this.globleSchema = globleSchema;
 		return this;
 	}
 	protected boolean globleFormat;
@@ -272,9 +278,11 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
 		try {
 			setGlobleDatabase(requestObject.getString(JSONRequest.KEY_DATABASE));
+			setGlobleSchema(requestObject.getString(JSONRequest.KEY_SCHEMA));
 			setGlobleFormat(requestObject.getBooleanValue(JSONRequest.KEY_FORMAT));
 
 			requestObject.remove(JSONRequest.KEY_DATABASE);
+			requestObject.remove(JSONRequest.KEY_SCHEMA);
 			requestObject.remove(JSONRequest.KEY_FORMAT);
 		} catch (Exception e) {
 			return extendErrorResult(requestObject, e);
@@ -334,10 +342,15 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 	 */
 	@Override
 	public void onVerifyRole(@NotNull SQLConfig config) throws Exception {
-		Log.i(TAG, "executeSQL  config = " + JSON.toJSONString(config));
+		//居然导致 @JSONField(serialize = false) 的方法也被执行了，然后 getTablePath 里 对 sch 赋值了	Log.i(TAG, "executeSQL  config = " + JSON.toJSONString(config));
 		if (config.getDatabase() == null && globleDatabase != null) {
 			config.setDatabase(globleDatabase);
 		}
+		if (config.getSchema() == null && globleSchema != null) {
+			config.setSchema(globleSchema);
+		}
+
+		Log.i(TAG, "executeSQL  config = " + JSON.toJSONString(config));
 
 		if (noVerifyRole == false) {
 			if (config.getRole() == null) {
@@ -695,10 +708,10 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 			query2 = JSONRequest.QUERY_TABLE;
 		}
 		else {
-//			if (isSubquery) {
-//				throw new IllegalArgumentException("子查询内不支持传 " + JSONRequest.KEY_QUERY + "!");
-//			}
-			
+			//			if (isSubquery) {
+			//				throw new IllegalArgumentException("子查询内不支持传 " + JSONRequest.KEY_QUERY + "!");
+			//			}
+
 			switch (query) {
 			case "0":
 			case "TABLE":
@@ -729,7 +742,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 		if (count2 < 0 || count2 > max) {
 			throw new IllegalArgumentException(path + "/" + JSONRequest.KEY_COUNT + ":value 中 value 的值不合法！必须在 0-" + max + " 内 !");
 		}
-		
+
 		request.remove(JSONRequest.KEY_QUERY);
 		request.remove(JSONRequest.KEY_COUNT);
 		request.remove(JSONRequest.KEY_PAGE);
@@ -1203,7 +1216,14 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 			return sqlObj;//容易丢失信息 JSON.parseObject(config);
 		}
 
-		return parseCorrectResponse(config.getTable(), sqlExecutor.execute(config));
+		try {
+			return parseCorrectResponse(config.getTable(), sqlExecutor.execute(config));
+		} catch (Exception e) {
+			if (Log.DEBUG == false && e instanceof SQLException) {
+				throw new SQLException("数据库驱动执行异常SQLException，非 Log.DEBUG 模式下不显示详情，避免泄漏真实模式名、表名等隐私信息", e);
+			}
+			throw e;
+		}
 	}
 
 
