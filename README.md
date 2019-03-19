@@ -115,32 +115,58 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
   <a href="http://www.8soo.com"><img src="http://ww1.sinaimg.cn/large/756dd729gw1f9n5ckuq6vj208902it8v.jpg" height="90"></a>
   <a href="https://www.kanhanman.com"><img src="http://images.cnblogs.com/cnblogs_com/tommylemon/992090/o_kanhanman.com.jpg" height="90"</a>
   <a href="http://juting.vip"><img src="http://i.juting.vip/wp-file/2018/12/logo1-1.png" height="90"></a>
+  <a href="https://www.51it.wang/"><img src="https://www.51it.wang/usr/uploads/2019/02/2420857313.png" height="90"></a>
 </a>
 </div>
 <br />
 
 [您在使用APIJSON吗？](https://github.com/TommyLemon/APIJSON/issues/73)
 
-### 关于作者
+
+### 我要赞赏
+如果你喜欢 APIJSON，感觉 APIJSON 帮助到了你，可以点右上角 ⭐Star 支持一下，谢谢 ^_^ <br />
+你也还可以扫描下面的二维码~ 请作者喝一杯咖啡。
+
+<img src="https://raw.githubusercontent.com/TommyLemon/StaticResources/master/pay/WechatPay.JPG"  width="240" ><img src="https://raw.githubusercontent.com/TommyLemon/StaticResources/master/pay/QQPay.JPG"  width="240" >
+
+> 如果希望捐赠之后能获得相关的帮助，可以选择加入下面的付费群来取代普通捐赠，付费群可以获得作者的直接帮助。
+
+如果在捐赠留言中备注名称，将会被记录到列表中~ 如果你也是 Github 开源作者，<br />
+捐赠时可以留下 Github 项目地址或者个人主页地址，链接将会被添加到列表中起到互相推广的作用。
+
+### 技术交流
+
+如果有什么问题或建议可以 [提ISSUE](https://github.com/TommyLemon/APIJSON/issues) 或 加群，交流技术，分享经验。<br >
+如果你解决了某些bug，或者新增了一些功能，欢迎 [贡献代码](https://github.com/TommyLemon/APIJSON/pulls)，感激不尽~
+
+#### QQ解决群 - 607020115（付费）
+自开群以来，还是有很多的朋友提出了很多问题，我也解决了很多问题，其中有大半问题是本库的Bug导致，也有些是使用者项目本
+身的环境问题，这花费了我大量的时间，经过我的观察和测试，到目前为止，本库的bug已经越来越少，当然不能说完全没有，但是
+已经能满足很大部分项目的需求。所以从现在起，我做出一个决定：把之前的讨论群改成解决群，并开启付费入群功能，专为解决大
+家在使用本库时遇到的问题，不管是本库bug还是，特殊的项目环境导致（包含项目本身的bug）。
+我也有自己的工作和娱乐时间，只有大家理解和支持我，我才能专心的为大家解决问题。不过也不用担心，我已经建立了另一个可以免费
+进入的QQ讨论群。
+
+#### QQ讨论群 - 739316921（免费）
+这个群，免费进入，大家可以相互讨论本库的相关使用和出现的问题，群主也会在里面解决问题，如果提出的问题，群成员不能帮助
+解决，需要群主解决，但是要花费群主五分钟以上的时间（本库Bug除外），群主将不会解决这个问题，如果项目紧急，请付费进入解
+决群解决（不过注意，付费群中群主会很认真很努力的解决问题，但也不能保证已经能完美解决）或者转换使用其他的开源库。
+
+### 贡献者们
 <div style="float:left">
   <a href="https://github.com/TommyLemon"><img src="https://avatars1.githubusercontent.com/u/5738175?s=400&u=5b2f372f0c03fae8f249d2d754e38971c2e17b92&v=4" height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/41"><img src="https://avatars0.githubusercontent.com/u/39320217?s=460&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/43"><img src="https://avatars0.githubusercontent.com/u/23173448?s=460&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/47"><img src="https://avatars2.githubusercontent.com/u/31512287?s=400&v=4"  height="90" width="90" ></a>
-  <br />
   <a href="https://github.com/TommyLemon/APIJSON/pull/70"><img src="https://avatars1.githubusercontent.com/u/22228201?s=400&v=4"  height="90" width="90" ></a>
+  <br />
+  <a href="https://github.com/TommyLemon/APIJSON/pull/74"><img src="https://avatars0.githubusercontent.com/u/1274536?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/69"><img src="https://avatars0.githubusercontent.com/u/13880474?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/72"><img src="https://avatars1.githubusercontent.com/u/10663804?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/33"><img src="https://avatars1.githubusercontent.com/u/5328313?s=460&v=4"  height="90" width="90" ></a>
 </div>
 <br />
-感谢其它作者的贡献。
-
-#### QQ技术交流群： 607020115（群1） 739316921（群2） 
-
-如果有什么问题或建议可以 [提ISSUE](https://github.com/TommyLemon/APIJSON/issues) 或 加群，交流技术，分享经验。<br >
-如果你解决了某些bug，或者新增了一些功能，欢迎 [贡献代码](https://github.com/TommyLemon/APIJSON/pulls)，感激不尽。
-
+感谢大家的贡献。
 
 ### 相关推荐
 [APIJSON, 让接口和文档见鬼去吧！](https://my.oschina.net/tommylemon/blog/805459)
@@ -181,9 +207,3 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
 
 ### 码云主页
 https://gitee.com/TommyLemon/APIJSON
-
-### 我要赞赏
-创作不易，右上角点 ⭐Star 支持下本项目吧，谢谢 ^_^ <br />
-[https://github.com/TommyLemon/APIJSON](https://github.com/TommyLemon/APIJSON)
-
- 
