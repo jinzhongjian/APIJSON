@@ -59,6 +59,8 @@ import zuo.biao.apijson.SQL;
 import zuo.biao.apijson.StringUtil;
 import zuo.biao.apijson.server.exception.NotExistException;
 import zuo.biao.apijson.server.model.Column;
+import zuo.biao.apijson.server.model.PgAttribute;
+import zuo.biao.apijson.server.model.PgClass;
 import zuo.biao.apijson.server.model.Table;
 
 /**config sql for JSON Request
@@ -75,8 +77,10 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 	public static final Map<String, String> TABLE_KEY_MAP;
 	static {
 		TABLE_KEY_MAP = new HashMap<String, String>();
-		TABLE_KEY_MAP.put(Table.class.getSimpleName(), Table.TAG);
-		TABLE_KEY_MAP.put(Column.class.getSimpleName(), Column.TAG);
+		TABLE_KEY_MAP.put(Table.class.getSimpleName(), Table.TABLE_NAME);
+		TABLE_KEY_MAP.put(Column.class.getSimpleName(), Column.TABLE_NAME);
+		TABLE_KEY_MAP.put(PgAttribute.class.getSimpleName(), PgAttribute.TABLE_NAME);
+		TABLE_KEY_MAP.put(PgClass.class.getSimpleName(), PgClass.TABLE_NAME);
 	}
 
 	@NotNull
@@ -219,7 +223,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		if (schema != null) {
 			String quote = getQuote();
 			String s = schema.startsWith(quote) && schema.endsWith(quote) ? schema.substring(1, schema.length() - 1) : schema;
-			if (StringUtil.isName(s) == false) {
+			if (StringUtil.isEmpty(s, true) == false && StringUtil.isName(s) == false) {
 				throw new IllegalArgumentException("@schema:value 中value必须是1个单词！");
 			}
 		}
@@ -249,18 +253,22 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 	@Override
 	public String getTablePath() {
 		String q = getQuote();
-		
+
 		String sqlTable = getSQLTable();
 		String sch = getSchema();
-		if (StringUtil.isEmpty(sch, true)) {
-			if ((Table.TAG.equals(sqlTable) || Column.TAG.equals(sqlTable)) ) {
+		if (sch == null) { //PostgreSQL 的 pg_class 和 pg_attribute 表好像不属于任何 Schema  StringUtil.isEmpty(sch, true)) {
+			if ((Table.TABLE_NAME.equals(sqlTable) || Column.TABLE_NAME.equals(sqlTable)) ) {
 				sch = SCHEMA_INFORMATION;
-			} else {
+			} 
+			else if ((PgAttribute.TABLE_NAME.equals(sqlTable) || PgClass.TABLE_NAME.equals(sqlTable)) ) {
+				sch = "";
+			}
+			else {
 				sch = DEFAULT_SCHEMA;
 			}
 		}
-		
-		return q + sch + q + "." + q + sqlTable + q + ( isKeyPrefix() ? " AS " + getAlias() : "");
+
+		return (StringUtil.isEmpty(sch, true) ? "" : q + sch + q + ".") + q + sqlTable + q + ( isKeyPrefix() ? " AS " + getAlias() : "");
 	}
 	@Override
 	public AbstractSQLConfig setTable(String table) { //Table已经在Parser中校验，所以这里不用防SQL注入
@@ -296,17 +304,43 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		return this;
 	}
 	@JSONField(serialize = false)
-	public String getGroupString() {
-		//TODO 加上子表的group
+	public String getGroupString(boolean hasPrefix) {
+		//加上子表的 group
+		String joinGroup = "";
+		if (joinList != null) {
+			SQLConfig ecfg;
+			SQLConfig cfg;
+			String c;
+			boolean first = true;
+			for (Join j : joinList) {
+				if (j.isAppJoin()) {
+					continue;
+				}
 
-		group = StringUtil.getTrimedString(group);
-		if (group.isEmpty()) {
-			return "";
+				ecfg = j.getOutterConfig();
+				if (ecfg != null && ecfg.getGroup() != null) { //优先级更高
+					cfg = ecfg;
+				}
+				else {
+					cfg = j.getJoinConfig();
+				}
+
+				cfg.setAlias(cfg.getTable());
+
+				c = ((AbstractSQLConfig) cfg).getGroupString(false);
+				if (StringUtil.isEmpty(c, true) == false) {
+					joinGroup += (first ? "" : ", ") + c;
+					first = false;
+				}
+
+			}
 		}
-
+		
+		
+		group = StringUtil.getTrimedString(group);
 		String[] keys = StringUtil.split(group);
 		if (keys == null || keys.length <= 0) {
-			return "";
+			return StringUtil.isEmpty(joinGroup, true) ? "" : (hasPrefix ? " GROUP BY " : "") + joinGroup;
 		}
 
 		for (int i = 0; i < keys.length; i++) {
@@ -319,7 +353,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 			keys[i] = getKey(keys[i]);
 		}
 
-		return " GROUP BY " + StringUtil.getString(keys);
+		return (hasPrefix ? " GROUP BY " : "") + StringUtil.concat(StringUtil.getString(keys), joinGroup, ", ");
 	}
 
 	@Override
@@ -338,15 +372,42 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 	 * @return HAVING conditoin0 AND condition1 OR condition2 ...
 	 */
 	@JSONField(serialize = false)
-	public String getHavingString() {
-		having = StringUtil.getTrimedString(having);
-		if(having.isEmpty()) {
-			return ""; 
-		}
+	public String getHavingString(boolean hasPrefix) {
+		//加上子表的 having
+		String joinHaving = "";
+		if (joinList != null) {
+			SQLConfig ecfg;
+			SQLConfig cfg;
+			String c;
+			boolean first = true;
+			for (Join j : joinList) {
+				if (j.isAppJoin()) {
+					continue;
+				}
 
+				ecfg = j.getOutterConfig();
+				if (ecfg != null && ecfg.getHaving() != null) { //优先级更高
+					cfg = ecfg;
+				}
+				else {
+					cfg = j.getJoinConfig();
+				}
+
+				cfg.setAlias(cfg.getTable());
+
+				c = ((AbstractSQLConfig) cfg).getHavingString(false);
+				if (StringUtil.isEmpty(c, true) == false) {
+					joinHaving += (first ? "" : ", ") + c;
+					first = false;
+				}
+
+			}
+		}
+		
+		having = StringUtil.getTrimedString(having);
 		String[] keys = StringUtil.split(having, ";");
 		if (keys == null || keys.length <= 0) {
-			return "";
+			return StringUtil.isEmpty(joinHaving, true) ? "" : (hasPrefix ? " HAVING " : "") + joinHaving;
 		}
 
 		String expression;
@@ -410,7 +471,8 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 			keys[i] = method + "(" + StringUtil.getString(ckeys) + ")" + suffix;
 		}
 
-		return " HAVING " + StringUtil.getString(keys, AND); //TODO 支持 OR, NOT 参考 @combine:"&key0,|key1,!key2"
+		//TODO 支持 OR, NOT 参考 @combine:"&key0,|key1,!key2"
+		return (hasPrefix ? " HAVING " : "") + StringUtil.concat(StringUtil.getString(keys, AND), joinHaving, AND);
 	}
 
 	@Override
@@ -426,13 +488,40 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		return this;
 	}
 	@JSONField(serialize = false)
-	public String getOrderString() {
-		//TODO 加上子表的order
+	public String getOrderString(boolean hasPrefix) {
+		//加上子表的 order
+		String joinOrder = "";
+		if (joinList != null) {
+			SQLConfig ecfg;
+			SQLConfig cfg;
+			String c;
+			boolean first = true;
+			for (Join j : joinList) {
+				if (j.isAppJoin()) {
+					continue;
+				}
+
+				ecfg = j.getOutterConfig();
+				if (ecfg != null && ecfg.getOrder() != null) { //优先级更高
+					cfg = ecfg;
+				}
+				else {
+					cfg = j.getJoinConfig();
+				}
+
+				cfg.setAlias(cfg.getTable());
+
+				c = ((AbstractSQLConfig) cfg).getOrderString(false);
+				if (StringUtil.isEmpty(c, true) == false) {
+					joinOrder += (first ? "" : ", ") + c;
+					first = false;
+				}
+
+			}
+		}
+
 
 		order = StringUtil.getTrimedString(order);
-		if (order.isEmpty()) {
-			return "";
-		}
 		if (order.contains("+")) {//replace没有包含的replacement会崩溃
 			order = order.replaceAll("\\+", " ASC ");
 		}
@@ -440,10 +529,9 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 			order = order.replaceAll("-", " DESC ");
 		}
 
-		//TODO  column, order, group 都改用 List<String> 存储！！！，并且每个字段都要加 Table. 前缀！
 		String[] keys = StringUtil.split(order);
 		if (keys == null || keys.length <= 0) {
-			return "";
+			return StringUtil.isEmpty(joinOrder, true) ? "" : (hasPrefix ? " ORDER BY " : "") + joinOrder;
 		}
 
 		String origin;
@@ -469,7 +557,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 			keys[i] = getKey(origin) + sort;
 		}
 
-		return " ORDER BY " + StringUtil.getString(keys);
+		return (hasPrefix ? " ORDER BY " : "") + StringUtil.concat(StringUtil.getString(keys), joinOrder, ", ");
 	}
 
 
@@ -502,13 +590,20 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		case HEAD:
 		case HEADS: //StringUtil.isEmpty(column, true) || column.contains(",") 时SQL.count(column)会return "*"
 			if (isPrepared() && column != null) {
+				String origin;
+				String alias;
+				int index;
 				for (String c : column) {
-					if (StringUtil.isName(c) == false) {
-						throw new IllegalArgumentException("HEAD请求: @column:value 中 value里面用 , 分割的每一项都必须是1个单词！");
+					index = c.lastIndexOf(":"); //StringUtil.split返回数组中，子项不会有null
+					origin = index < 0 ? c : c.substring(0, index);
+					alias = index < 0 ? null : c.substring(index + 1);
+					if (StringUtil.isName(origin) == false || (alias != null && StringUtil.isName(alias) == false)) {
+						throw new IllegalArgumentException("HEAD请求: 预编译模式下 @column:value 中 value里面用 , 分割的每一项"
+								+ " column:alias 中 column 必须是1个单词！如果有alias，则alias也必须为1个单词！并且不要有多余的空格！");
 					}
 				}
 			}
-			return SQL.count(column != null && column.size() == 1 ? getKey(column.get(0)) : "*");
+			return SQL.count(column != null && column.size() == 1 ? getKey(Pair.parseEntry(column.get(0), true).getKey()) : "*");
 		case POST:
 			if (column == null || column.isEmpty()) {
 				throw new IllegalArgumentException("POST 请求必须在Table内设置要保存的 key:value ！");
@@ -521,16 +616,17 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 					throw new IllegalArgumentException("POST请求: 每一个 key:value 中的key都必须是1个单词！");
 				}
 				s += ((pfirst ? "" : ",") + getKey(c));
-				
+
 				pfirst = false;
 			}
 
 			return "(" + s + ")";
 		case GET:
 		case GETS:
-			boolean isQuery = RequestMethod.isQueryMethod(method);
+			boolean isQuery = RequestMethod.isQueryMethod(method); //TODO 这个有啥用？上面应是 getMethod 的值 GET 和 GETS 了。
 			String joinColumn = "";
 			if (isQuery && joinList != null) {
+				SQLConfig ecfg;
 				SQLConfig cfg;
 				String c;
 				boolean first = true;
@@ -539,16 +635,23 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 						continue;
 					}
 
-					cfg = j.getJoinConfig();
+					ecfg = j.getOutterConfig();
+					if (ecfg != null && ecfg.getColumn() != null) { //优先级更高
+						cfg = ecfg;
+					}
+					else {
+						cfg = j.getJoinConfig();
+					}
+
 					cfg.setAlias(cfg.getTable());
 
 					c = ((AbstractSQLConfig) cfg).getColumnString(true);
 					if (StringUtil.isEmpty(c, true) == false) {
 						joinColumn += (first ? "" : ", ") + c;
+						first = false;
 					}
 
 					inSQLJoin = true;
-					first = false;
 				}
 			}
 
@@ -930,12 +1033,12 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 					andList = new ArrayList<>();
 				}
 				else if (prior && andList.isEmpty() == false) {
-					
+
 					String idKey = getIdKey();
 					String idInKey = idKey + "{}";
 					String userIdKey = getUserIdKey();
 					String userIdInKey = userIdKey + "{}";
-					
+
 					if (andList.contains(idKey)) {
 						i ++;
 					}
@@ -1610,7 +1713,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 					if (childs[i] instanceof JSON) {
 						throw new IllegalArgumentException(key + "<>:value 中value类型不能为JSON！");
 					}
-					
+
 					if (DATABASE_POSTGRESQL.equals(getDatabase())) {
 						condition += (i <= 0 ? "" : (Logic.isAnd(type) ? AND : OR))
 								+ getKey(key) + " @> " + getValue(newJSONArray(childs[i])); //operator does not exist: jsonb @> character varying  "[" + childs[i] + "]"); 
@@ -1827,7 +1930,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 
 		String condition = table + config.getJoinString() + where + (
 				RequestMethod.isGetMethod(config.getMethod(), true) == false ?
-						"" : config.getGroupString() + config.getHavingString() + config.getOrderString()
+						"" : config.getGroupString(true) + config.getHavingString(true) + config.getOrderString(true)
 				)
 				; //+ config.getLimitString();
 
@@ -1923,7 +2026,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 							+ quote + tn + quote + "." + quote + j.getTargetKey() + quote;
 					jc.setMain(false).setKeyPrefix(true);
 
-//					preparedValueList.addAll(jc.getPreparedValueList());
+					//					preparedValueList.addAll(jc.getPreparedValueList());
 
 					pvl.addAll(jc.getPreparedValueList());
 					changed = true;
@@ -1974,9 +2077,9 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		if (request.isEmpty()) { // User:{} 这种空内容在查询时也有效
 			return config; //request.remove(key); 前都可以直接return，之后必须保证 put 回去
 		}
-		
+
 		String schema = request.getString(KEY_SCHEMA);
-		
+
 		String idKey = callback.getIdKey(schema, table);
 		String idInKey = idKey + "{}";
 		String userIdKey = callback.getUserIdKey(schema, table);
@@ -2280,6 +2383,12 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 				}
 
 				joinConfig.setMain(false).setKeyPrefix(true);
+
+				if ("<".equals(j.getJoinType()) || ">".equals(j.getJoinType())) {
+					SQLConfig outterConfig = newSQLConfig(method, name, j.getOutter(), null, callback);
+					outterConfig.setMain(false).setKeyPrefix(true);
+					j.setOutterConfig(outterConfig);
+				}
 			}
 
 			//解决 query: 1/2 查数量时报错  
@@ -2429,14 +2538,14 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		 * @return
 		 */
 		Object newId(RequestMethod method, String table);
-		
+
 		/**获取主键名
 		 * @param schema
 		 * @param table
 		 * @return
 		 */
 		String getIdKey(String schema, String table);
-		
+
 		/**获取 User 的主键名
 		 * @param schema
 		 * @param table
@@ -2444,7 +2553,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		 */
 		String getUserIdKey(String schema, String table);
 	}
-	
+
 	public static abstract class SimpleCallback implements Callback {
 
 
@@ -2462,7 +2571,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 		public String getUserIdKey(String schema, String table) {
 			return KEY_USER_ID;
 		}
-		
+
 	}
 
 }
