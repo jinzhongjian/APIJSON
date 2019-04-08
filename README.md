@@ -3,9 +3,7 @@
   APIJSON
 </h1>
  
-<p align="center">🏆码云最有价值开源项目<br />🚀后端接口和文档自动化，前端(客户端) 定制返回JSON的数据和结构！<br /><a href="https://github.com/996icu/996.ICU/blob/master/LICENSE">
-    <img alt="996icu" src="https://img.shields.io/badge/license-NPL%20(The%20996%20Prohibited%20License)-blue.svg">
-  </a></p>
+<p align="center">🏆码云最有价值开源项目<br />🚀后端接口和文档自动化，前端(客户端) 定制返回JSON的数据和结构！</p>
 
 <p align="center" >
   <a href="https://github.com/TommyLemon/APIJSON/tree/master/MySQL"><img src="https://img.shields.io/badge/MySQL-5.7%2B-brightgreen.svg?style=flat"></a>
@@ -49,10 +47,14 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
 前端再也不用和后端沟通接口或文档问题了！再也不会被文档各种错误坑了！<br />
 后端再也不用为了兼容旧接口写新版接口和文档了！再也不会被前端随时随地没完没了地烦了！
 
+<p align="center" >
+  <a ><img src="https://raw.githubusercontent.com/TommyLemon/StaticResources/master/APIJSON_GVPAwardCertificate-small.jpg"></a>
+</p>
+
 ### 特点功能
 
 #### 在线解析
-* 自动生成文档，清晰可读永远最新
+* 自动生成接口文档，清晰可读永远最新
 * 自动生成请求代码，支持Android和iOS
 * 自动生成JavaBean文件，一键下载
 * 自动管理与测试接口用例，一键共享
@@ -75,9 +77,25 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
 <br />
 
 ![](https://raw.githubusercontent.com/TommyLemon/StaticResources/master/APIJSON_Auto_get.jpg) 
+<p align="center" >
+  <a >多表关联查询、结构自由组合、多个测试账号、一键共享测试用例</a>
+</p>
+
 ![](https://raw.githubusercontent.com/TommyLemon/StaticResources/master/APIJSON_Auto_code.jpg) 
+<p align="center" >
+  <a >自动生成封装请求JSON的Android与iOS代码、一键自动生成JavaBean或解析Response的代码</a>
+</p>
+
 ![](https://raw.githubusercontent.com/TommyLemon/StaticResources/master/APIJSON_Auto_doc.jpg) 
+<p align="center" >
+  <a >自动保存请求记录、自动生成接口文档，可添加常用请求、快捷查看一键恢复</a>
+</p>
+
 ![](https://raw.githubusercontent.com/TommyLemon/StaticResources/master/APIJSON_Auto_test.jpg) 
+<p align="center" >
+  <a >一键自动接口回归测试，不需要写任何代码(注解、注释等全都不要)</a>
+</p>
+
 <br /><br />
 [以下Gif图看起来比较卡，实际在手机上App运行很流畅]
 <br />
@@ -194,7 +212,7 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
 
 [uliweb-apijson](https://github.com/zhangchunlin/uliweb-apijson) Python 版 APIJSON，支持 MySQL, PostgreSQL, MS SQL Server, Oracle, SQLite 等
 
-[APIJSONParser](https://github.com/Zerounary/APIJSONParser) 参考 APIJSON 设计标准开发的一款 SQL 编译器框架
+[APIJSONParser](https://github.com/Zerounary/APIJSONParser) Complate JSON to SQL，APIJSON编译器，将JSON动态编译成SQL
 
 [ApiJsonByJFinal](https://gitee.com/zhiyuexin/ApiJsonByJFinal) 整合 JFinal 和 APIJSON 的 Demo
 
