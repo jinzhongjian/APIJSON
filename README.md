@@ -14,7 +14,7 @@
 <p align="center" >
   <a href="https://github.com/TommyLemon/APIJSON/tree/master/APIJSON-Java-Server"><img src="https://img.shields.io/badge/Java-1.7%2B-brightgreen.svg?style=flat"></a>
   <a href="https://github.com/liaozb/APIJSON.NET"><img src="https://img.shields.io/badge/CSharp-2.1%2B-brightgreen.svg?style=flat"></a>
-  <a href="https://github.com/orchie/apijson"><img src="https://img.shields.io/badge/PHP-7.0%2B-brightgreen.svg?style=flat"></a>
+  <a href="https://github.com/qq547057827/apijson-php"><img src="https://img.shields.io/badge/PHP-7.0%2B-brightgreen.svg?style=flat"></a>
   <a href="https://github.com/TEsTsLA/apijson"><img src="https://img.shields.io/badge/Node.js-ES6%2B-brightgreen.svg?style=flat"></a>
   <a href="https://github.com/zhangchunlin/uliweb-apijson"><img src="https://img.shields.io/badge/Python-3%2B-brightgreen.svg?style=flat"></a>
 </p>
@@ -178,11 +178,18 @@ APIJSON是一种为API而生的JSON网络传输协议。<br />
   <a href="https://github.com/TommyLemon/APIJSON/pull/43"><img src="https://avatars0.githubusercontent.com/u/23173448?s=460&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/47"><img src="https://avatars2.githubusercontent.com/u/31512287?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/70"><img src="https://avatars1.githubusercontent.com/u/22228201?s=400&v=4"  height="90" width="90" ></a>
-  <br />
   <a href="https://github.com/TommyLemon/APIJSON/pull/74"><img src="https://avatars0.githubusercontent.com/u/1274536?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/69"><img src="https://avatars0.githubusercontent.com/u/13880474?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/72"><img src="https://avatars1.githubusercontent.com/u/10663804?s=400&v=4"  height="90" width="90" ></a>
   <a href="https://github.com/TommyLemon/APIJSON/pull/33"><img src="https://avatars1.githubusercontent.com/u/5328313?s=460&v=4"  height="90" width="90" ></a>
+  <br />
+  <a href="https://github.com/liaozb/APIJSON.NET"><img src="https://avatars3.githubusercontent.com/u/12622501?s=400&v=4"  height="90" width="90" ></a>
+  <a href="https://github.com/qq547057827/apijson-php"><img src="https://avatars3.githubusercontent.com/u/1657532?s=400&v=4"  height="90" width="90" ></a>
+  <a href="https://github.com/orchie/apijson"><img src="https://avatars1.githubusercontent.com/u/29848298?s=400&v=4"  height="90" width="90" ></a>
+  <a href="https://github.com/TEsTsLA/apijson"><img src="https://avatars2.githubusercontent.com/u/17310639?s=400&v=4"  height="90" width="90" ></a>
+  <a href="https://github.com/zhangchunlin/uliweb-apijson"><img src="https://avatars0.githubusercontent.com/u/359281?s=400&v=4"  height="90" width="90" ></a>
+  <a href="https://gitee.com/zhiyuexin/ApiJsonByJFinal"><img src="https://avatar.gitee.com/uploads/90/490_zhiyuexin.jpg!avatar100?1368664499"  height="90" width="90" ></a>
+  <a href="https://github.com/Airforce-1/SpringServer1.2-APIJSON"><img src="https://avatars3.githubusercontent.com/u/6212428?s=400&v=4"  height="90" width="90" ></a>
 </div>
 <br />
 感谢大家的贡献。
